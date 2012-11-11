@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<!--[if lt IE 7]> <html class="lt-ie7 lte-ie7 lt-ie8 lte-ie8 lte-ie9 lt-ie9"> <![endif]-->
+<!--[if IE 7]>    <html class="lte-ie7 lt-ie8 lte-ie8 lte-ie9 lt-ie9"> <![endif]-->
+<!--[if IE 8]>    <html class="lte-ie8 lte-ie9 lt-ie9"> <![endif]-->
+<!--[if IE 9]>    <html class="lte-ie9 ie9"> <![endif]-->
+<!--[if gt IE 9]><!--><html class="no-js"><!--<![endif]-->
+
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+		<title>jQuery paperfold plugin</title>
+
+		<link rel="stylesheet" href="css/paperfold.css" />
+
+		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script> 
+		<script type="text/javascript" src="js/prefixfree.js"></script>
+		<script type="text/javascript" src="js/modernizr.paperfold.js"></script>
+		<script type="text/javascript" src="js/jquery.paperfold.js"></script>
+
+		<script type="text/javascript">
+			$('.pf').paperfold({
+				a : 1
+			});
+		</script>
+	</head>
+	<body>
+		<div class="pf">
+			<div class="pf__item pf__item_collapsed">
+				<div class="pf__short">
+					<div class="pf__reducer">
+						<p>
+							Nuka-Cola was the most popular soft drink in the world before the Great War. After the War, many bottles of this pre-War favorite still survive and Nuka-Cola remains the most popular soft drink of the post-apocalyptic world. 
+						</p>
+					</div>
+				</div>
+
+				<div class="pf__trigger pf__trigger_collapsed">
+					<span class="pf__trigger-text pf__trigger-text_collapsed">Expand &rarr;</span>
+					<span class="pf__trigger-text pf__trigger-text_expanded">&larr; Collapse</span>
+				</div>
+
+				<div class="pf__full">
+					<div class="pf__reducer">
+						<p>Nuka-Cola was invented in 2044 by John Caleb-Bradberton. Its unique taste gained widespread popularity quickly, ending with it becoming the most popular soft drink in the United States with an extremely dedicated following. The widely known Dazzling Blue bottle color was adopted as standard in 2052, after market research programs indicated that the blue color was the favorite in 86 people out of a hundred polled.</p>
+
+						<p>The ingredients of Nuka-Cola are: carbonated water, caramel color, aspartame, phosphoric acid, potassium benzoate (to protect taste), natural flavors, citric acid, and caffeine. What gives it the unique flavor is the essence of seventeen different fruits mixed in just the right proportion to give the beverage its trademark taste. Some versions of the drink also include vitaminerals and health tonics. During the Great Passion Fruit Famine of 2044, people actually noticed the taste difference when the recipe was changed. </p>
+
+						<p>By 2067, vending machines with ice cold Nuka-Cola could be found on virtually every street in America.</p>  
+					</div>
+				</div>
+			</div>
+		</div>
+	</body>
+</html>
