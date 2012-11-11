@@ -9,141 +9,22 @@ var transEndEventNames = {
 },
 	transEndEventName = transEndEventNames[Modernizr.prefixed('transition')];
 
+// $.eventBus.bind('paperfold init', function(e) {
+// 	// $(window).load(function (e) {
+// 	var paperfolds = [];
+// 	var hiddenElements = $('.pf__hidden');
 
-// replace jQuery.fx.step._default
-var $_fx_step_default = $.fx.step._default;
-$.fx.step._default = function(fx) {
-	if(!fx.elem.customAnimate) return $_fx_step_default(fx);
-	fx.elem[fx.prop] = fx.now;
-	fx.elem.updated = true;
-};
+// 	if(Modernizr.csstransforms3d && !jia.isMobileBrowser) {
+// 		$(hiddenElements).addClass('pf__inited');
+// 		$.each(hiddenElements, function(i, element) {
+// 			paperfolds[i] = Object.create(paperfold);
+// 			paperfolds[i].init(element, 250);
+// 		});
+// 	}
 
+// 	$('.pf__trigger').show();
 
-var paperfold = {
-	percentage: 0,
-
-	init: function(element, maxHeight, toggleCallback) {
-		this.element = $(element);
-		this.maxHeight = maxHeight;
-		this.toggleCallback = toggleCallback;
-
-		// get real element height
-		this.height = this.element.css('height', 'auto').outerHeight();
-		this.element.css('height', '');
-
-		// calculate amount and height of the folds
-		this.foldCount = Math.ceil(this.height / this.maxHeight);
-		this.foldHeight = Math.floor(this.height / this.foldCount);
-
-		// Make sure it is an even number, so we can split in in 2
-		// this.foldHeight = (this.foldHeight % 2 === 0) ? this.foldHeight : this.foldHeight + 1;
-		// detach the elements children from the dom and cache them 
-		this.content = this.element.children().detach();
-
-		// add folds containing the previously cached children elements
-		// to the element
-		for(var i = 0, j = 0; i < this.foldCount; i++, j += 2) {
-			var topHeight = bottomHeight = Math.ceil(this.foldHeight / 2);
-
-			if((i + 1) === this.foldCount && this.foldHeight / 2 % 2) bottomHeight = this.height - (j + 1) * topHeight + 2;
-
-			this.element.append(this.createFold(j, topHeight, bottomHeight));
-		}
-
-		// cache the folds -> can i do this while creating them?
-		// i mean i can of course cache them but then the dom connection is not there
-		// i'd love to get a hint: @mrflix or mrflix@gmail.com
-		this.folds = this.element.find('> .pf__fold');
-		this.bottoms = this.folds.find('> .pf__bottom');
-		this.tops = this.folds.find('> .pf__top');
-
-		// bind buttons
-		this.trigger = this.element.prev('.event__trigger');
-		this.trigger.click($.proxy(this, 'toggle'));
-
-		this.element.addClass('pf__ready');
-	},
-	update: function(maxHeight) {
-		this.element.children().detach();
-		this.element.html(this.content);
-		this.init(this.element, maxHeight);
-		if(this.percentage !== 0) {
-			this.open(this.percentage);
-		}
-	},
-	createFold: function(j, topHeight, bottomHeight) {
-		var offsetTop = -j * topHeight;
-		var offsetBottom = -this.height + j * topHeight + this.foldHeight;
-		return $('<div>').addClass('pf__fold').append(
-		$('<div>').addClass('pf__top').css('height', topHeight).append(
-		$('<div>').addClass('pf__wrapper').append(
-		$('<div>').addClass('pf__inner').css('top', offsetTop).append(this.content.clone()))).add($('<div>').addClass('pf__bottom').css('height', bottomHeight).append(
-		$('<div>').addClass('pf__wrapper').append(
-		$('<div>').addClass('pf__inner').css('bottom', offsetBottom).append(this.content.clone())))));
-	},
-	toggle: function() {
-
-		this.element.toggleClass('pf__visible');
-
-		if(this.element.hasClass('pf__visible')) {
-			// open
-			// animate folds height (css transition)
-			this.folds.height(this.foldHeight);
-			this.trigger.removeClass('pf__trigger_collapsed').addClass('pf__trigger_expanded');
-		} else {
-			// close
-			// animate folds height (css transition)
-			this.folds.height(0);
-			this.trigger.removeClass('pf__trigger_expanded').addClass('pf__trigger_collapsed');
-		}
-		this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
-	},
-	open: function(percentage) {
-		// cache percentage
-		this.percentage = percentage;
-
-		// change angle of tops and bottoms
-		var c = this.foldHeight * percentage,
-			a = b = this.foldHeight / 2,
-			part = 2 * b * c,
-			bottomAngle = part <= 0 ? 90 : Math.acos((b * b + c * c - a * a) / part) * 180 / Math.PI,
-			topAngle = 360 - bottomAngle;
-
-		this.tops.css(transformString, 'rotateX(' + topAngle + 'deg)');
-		this.bottoms.css(transformString, 'rotateX(' + bottomAngle + 'deg)');
-
-		// change folds height
-		var foldHeight = this.height / this.foldCount * percentage;
-		this.folds.height(foldHeight);
-
-		// change the background color
-		// from dark hsl(192,6,33) at 0
-		// to light hsl(192,0,100) at 100
-		var saturation = Math.round(6 - 6 * percentage),
-			lightness = 33 + Math.round(67 * percentage),
-			backgroundColor = 'hsl(192,' + saturation + '%,' + lightness + '%)';
-
-		this.tops.add(this.bottoms).css('background-color', backgroundColor);
-	},
-};
-
-
-$.eventBus.bind('paperfold init', function(e) {
-	// $(window).load(function (e) {
-	var paperfolds = [];
-	var hiddenElements = $('.pf__hidden');
-
-	if(Modernizr.csstransforms3d && !jia.isMobileBrowser) {
-		$(hiddenElements).addClass('pf__inited');
-		$.each(hiddenElements, function(i, element) {
-			paperfolds[i] = Object.create(paperfold);
-			paperfolds[i].init(element, 250);
-		});
-	}
-
-	$('.pf__trigger').show();
-
-});
+// });
 
 /**
  * @author Dmitry Kharchenko (dmitry@upfrontmedia.asia)
@@ -166,7 +47,8 @@ $.eventBus.bind('paperfold init', function(e) {
 	$.paperfold.conf = {
 		duration: 500,
 		foldHeight: 250,
-		items: '.pf__item'
+		items: '.pf__item',
+		foldable: '.pf__full'
 	};
 
 	$.paperfold.isMobileBrowser = (navigator.userAgent.match(/Android/i) ||
@@ -177,22 +59,137 @@ $.eventBus.bind('paperfold init', function(e) {
 			 navigator.userAgent.match(/BlackBerry/)
 			 );
 
+	var paperfold = {
+		percentage: 0,
+
+		init: function(element, maxHeight, toggleCallback) {
+
+			this.element = $(element);
+			this.maxHeight = maxHeight;
+			this.toggleCallback = toggleCallback;
+
+			// get real element height
+			this.height = this.element.css('height', 'auto').outerHeight();
+			this.element.css('height', '');
+
+			// calculate amount and height of the folds
+			this.foldCount = Math.ceil(this.height / this.maxHeight);
+			this.foldHeight = Math.floor(this.height / this.foldCount);
+
+			// Make sure it is an even number, so we can split in in 2
+			// this.foldHeight = (this.foldHeight % 2 === 0) ? this.foldHeight : this.foldHeight + 1;
+			// detach the elements children from the dom and cache them 
+			this.content = this.element.children().detach();
+
+			// add folds containing the previously cached children elements
+			// to the element
+			for(var i = 0, j = 0; i < this.foldCount; i++, j += 2) {
+				var bottomHeight = Math.ceil(this.foldHeight / 2),
+				topHeight = bottomHeight;
+
+				if((i + 1) === this.foldCount && this.foldHeight / 2 % 2) bottomHeight = this.height - (j + 1) * topHeight + 2;
+
+				this.element.append(this.createFold(j, topHeight, bottomHeight));
+			}
+
+			// cache the folds -> can i do this while creating them?
+			// i mean i can of course cache them but then the dom connection is not there
+			// i'd love to get a hint: @mrflix or mrflix@gmail.com
+			this.folds = this.element.find('> .pf__fold');
+			this.bottoms = this.folds.find('> .pf__bottom');
+			this.tops = this.folds.find('> .pf__top');
+
+			// bind buttons
+			this.trigger = this.element.prev('.event__trigger');
+			this.trigger.click($.proxy(this, 'toggle'));
+
+			this.element.parent().addClass('pf__item_ready');
+		},
+		update: function(maxHeight) {
+			this.element.children().detach();
+			this.element.html(this.content);
+			this.init(this.element, maxHeight);
+			if(this.percentage !== 0) {
+				this.open(this.percentage);
+			}
+		},
+		createFold: function(j, topHeight, bottomHeight) {
+			var offsetTop = -j * topHeight;
+			var offsetBottom = -this.height + j * topHeight + this.foldHeight;
+			return $('<div>').addClass('pf__fold').append(
+			$('<div>').addClass('pf__top').css('height', topHeight).append(
+			$('<div>').addClass('pf__wrapper').append(
+			$('<div>').addClass('pf__inner').css('top', offsetTop).append(this.content.clone()))).add($('<div>').addClass('pf__bottom').css('height', bottomHeight).append(
+			$('<div>').addClass('pf__wrapper').append(
+			$('<div>').addClass('pf__inner').css('bottom', offsetBottom).append(this.content.clone())))));
+		},
+		toggle: function() {
+
+			this.element.toggleClass('pf__visible');
+
+			if(this.element.hasClass('pf__visible')) {
+				// open
+				// animate folds height (css transition)
+				this.folds.height(this.foldHeight);
+				this.trigger.removeClass('pf__trigger_collapsed').addClass('pf__trigger_expanded');
+			} else {
+				// close
+				// animate folds height (css transition)
+				this.folds.height(0);
+				this.trigger.removeClass('pf__trigger_expanded').addClass('pf__trigger_collapsed');
+			}
+			this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
+		},
+		open: function(percentage) {
+			// cache percentage
+			this.percentage = percentage;
+
+			// change angle of tops and bottoms
+			var c = this.foldHeight * percentage,
+				a = b = this.foldHeight / 2,
+				part = 2 * b * c,
+				bottomAngle = part <= 0 ? 90 : Math.acos((b * b + c * c - a * a) / part) * 180 / Math.PI,
+				topAngle = 360 - bottomAngle;
+
+			this.tops.css(transformString, 'rotateX(' + topAngle + 'deg)');
+			this.bottoms.css(transformString, 'rotateX(' + bottomAngle + 'deg)');
+
+			// change folds height
+			var foldHeight = this.height / this.foldCount * percentage;
+			this.folds.height(foldHeight);
+
+			// change the background color
+			// from dark hsl(192,6,33) at 0
+			// to light hsl(192,0,100) at 100
+			var saturation = Math.round(6 - 6 * percentage),
+				lightness = 33 + Math.round(67 * percentage),
+				backgroundColor = 'hsl(192,' + saturation + '%,' + lightness + '%)';
+
+			this.tops.add(this.bottoms).css('background-color', backgroundColor);
+		},
+	};
+
 	$.fn.paperfold = function(conf) {
 
 		//Extend defaults
-		conf = $.extend($.iGlow.paperfold, conf);
+		conf = $.extend($.paperfold.conf, conf);
 
-		var jItems = this,
+		this.each(function(i) {
+
+			var jItems = $(this).find(conf.items),
+				jFoldable = $(this).find(conf.foldable),
 				paperfolds = [];
 
-		jItems.each(function(i, el) {
 			if(Modernizr.csstransforms3d && !$.paperfold.isMobileBrowser) {
-				el.addClass('pf__inited');
-				paperfolds[i] = Object.create(paperfold);
-				paperfolds[i].init(el, conf.foldHeight);
+				jFoldable.each(function(i, el) {
+						$(el).parent().addClass('pf__item_inited');
+						paperfolds[i] = Object.create(paperfold);
+						paperfolds[i].init(el, conf.foldHeight);
+				});
 			} else {
 				console.log('not supported');
 			}
+			
 		});
 
 		return this;
