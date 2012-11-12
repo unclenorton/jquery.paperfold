@@ -65,8 +65,7 @@
 
 /* Paperfold */
 .pf__item .pf__full {
-	/*overflow: hidden; /* important for big folds but bad for demo because it cuts of the depth in other perspectives */
-
+	overflow: hidden; /* important for big folds but bad for demo because it cuts of the depth in other perspectives */
 	transform-style: preserve-3d;
 }
 
@@ -98,16 +97,15 @@
 	height: 0;
 	position: relative;
 	transform-style: preserve-3d;
-	perspective: 400px;
-	bakface-visibility: hidden;
+	perspective: 500px;
+	bakface-visibility: visible;
 }
 
 .pf__item_ready .pf__fold {
-	transition: height 500ms linear;
+	height: 0;
+	transition: height 400ms linear;
 }
 
-/* reset the background color */
-.pf__item .pf__fold section { background: none; }
 /* 
 	they are the two folds - top and bottom
 */
@@ -116,7 +114,7 @@
 	overflow: hidden;
 	width: 100%;
 	transform-origin: top;
-	transform: rotateX(-90deg);
+	
 	background-image: linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.55) 3%, rgba(255,255,255,0.5) 66%, rgba(255,255,255,0));
 	background-color: #505455; /* hsl(192,6,33) */
 	position: relative;
@@ -130,7 +128,8 @@
 .pf__item_ready .pf__fold .pf__top,
 .pf__item_ready .pf__fold .pf__bottom {
 	/* closing transition */
-	transition: transform 800ms cubic-bezier(0.000, 0.450, 1.000, 0.950), background-color 800ms ease-in, opacity 300ms linear;;
+	transform: rotateX(-90deg);
+	transition: transform 400ms cubic-bezier(0.000, 0.450, 1.000, 0.950), background-color 400ms ease-in, opacity 300ms linear;;
 }
 
 .pf__item .pf__fold .pf__top {
@@ -138,10 +137,11 @@
 	z-index: 10;
 }
 
-.pf__item .pf__fold .pf__bottom {
+.pf__item_ready .pf__fold .pf__bottom {
 	bottom: 0;
 	position: absolute;
 	background-image: -moz-linear-gradient(top, rgba(255,255,255,0), rgba(255,255,255,0.5) 34%, rgba(255,255,255,.95) 97%, rgba(255,255,255,1));
+	background-image: -ms-linear-gradient(top, rgba(255,255,255,0), rgba(255,255,255,0.5) 34%, rgba(255,255,255,.95) 97%, rgba(255,255,255,1));
 	background-image: linear-gradient(top, rgba(255,255,255,0), rgba(255,255,255,0.5) 34%, rgba(255,255,255,.95) 97%, rgba(255,255,255,1));
 	transform-origin: bottom;
 	transform: rotateX(90deg);
@@ -154,7 +154,7 @@
 	opacity: 1;
 	background-color: white;
 	/* opening transition */
-	transition: transform 500ms cubic-bezier(0.000, 0.050, 1.000, 0.550), background-color 500ms ease-out, opacity 300ms linear;
+	transition: transform 400ms cubic-bezier(0.000, 0.050, 1.000, 0.550), background-color 400ms ease-out, opacity 300ms linear;
 }
 
 /* inner holder for the content */
@@ -162,18 +162,9 @@
 	position: absolute;
 }
 
-.pf__item_ready .pf__full, .pf__item_visible .pf__full,
-.pf__item_ready .pf__fold, .pf__item_visible .pf__fold,
-.pf__item_ready .pf__fold .pf__top, .pf__item_ready .pf__fold .pf__bottom,
-.pf__item_visible .pf__fold .pf__top, .pf__item_visible .pf__fold .pf__bottom,
-.pf__item_ready .pf__fold .pf__inner {
-	transition-duration: 400ms;
-}
-
-.pf__item.no-transition, .pf__item_visible.no-transition,
-.pf__item.no-transition .pf__fold, .pf__item_visible.no-transition .pf__fold,
-.pf__item.no-transition .pf__fold .pf__top, .pf__item.no-transition .pf__fold .pf__bottom,
-.pf__item_visible.no-transition .pf__fold .pf__top, .pf__item_visible.no-transition .pf__fold .pf__bottom,
-.pf__item.no-transition .pf__fold .pf__inner {
-	transition: none;
+.pf__item_ready .pf__full,
+.pf__item_ready .pf__fold,
+.pf__item_ready .pf__top, .pf__item_ready .pf__bottom,
+.pf__item_ready .pf__inner {
+	transition-duration: 400ms !important;
 }
