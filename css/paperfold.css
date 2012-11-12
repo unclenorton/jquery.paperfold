@@ -31,16 +31,15 @@
 .pf__item .pf__reducer {
 	border-right: 1px solid #ccc;
 	border-left: 1px solid #ccc;
-	padding: 30px 40px 2em 40px;
+	padding: 0 40px 2em 40px;
 }
 
-.pf__item .pf__reducer_folding {
-	padding-top: 0;
+.pf__short .pf__reducer {
+	padding-top: 30px;
 }
 
-.pf__item-inited .pf__reducer_folding {
-	width: 471px;
-	border: 0 none;
+.pf__reducer p {
+	margin-top: 0;
 }
 
 .pf__trigger {
