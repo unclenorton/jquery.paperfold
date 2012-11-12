@@ -6,25 +6,7 @@ var transEndEventNames = {
 	'OTransition': 'oTransitionEnd',
 	'msTransition': 'MSTransitionEnd',
 	'transition': 'transitionend'
-},
-	transEndEventName = transEndEventNames[Modernizr.prefixed('transition')];
-
-// $.eventBus.bind('paperfold init', function(e) {
-// 	// $(window).load(function (e) {
-// 	var paperfolds = [];
-// 	var hiddenElements = $('.pf__hidden');
-
-// 	if(Modernizr.csstransforms3d && !jia.isMobileBrowser) {
-// 		$(hiddenElements).addClass('pf__inited');
-// 		$.each(hiddenElements, function(i, element) {
-// 			paperfolds[i] = Object.create(paperfold);
-// 			paperfolds[i].init(element, 250);
-// 		});
-// 	}
-
-// 	$('.pf__trigger').show();
-
-// });
+}, transEndEventName = transEndEventNames[Modernizr.prefixed('transition')];
 
 /**
  * @author Dmitry Kharchenko (dmitry@upfrontmedia.asia)
@@ -59,7 +41,7 @@ var transEndEventNames = {
 			 navigator.userAgent.match(/BlackBerry/)
 			 );
 
-	var paperfold = {
+	var Paperfold = {
 		percentage: 0,
 
 		init: function(element, maxHeight, toggleCallback) {
@@ -76,8 +58,6 @@ var transEndEventNames = {
 			this.foldCount = Math.ceil(this.height / this.maxHeight);
 			this.foldHeight = Math.floor(this.height / this.foldCount);
 
-			// Make sure it is an even number, so we can split in in 2
-			// this.foldHeight = (this.foldHeight % 2 === 0) ? this.foldHeight : this.foldHeight + 1;
 			// detach the elements children from the dom and cache them 
 			this.content = this.element.children().detach();
 
@@ -170,6 +150,53 @@ var transEndEventNames = {
 		},
 	};
 
+	//Expander object. Example usage: 'read more' in front page sections
+	var Expander = function (options) {
+		var defaults = {
+			expandable : '.pf__item',
+			expanded : '.pf__full',
+			trigger : '.pf__trigger',
+			pseudo : '.pf__trigger-text',
+			
+			expandedClass : 'pf__trigger_expanded',
+			collapsedClass : 'pf__trigger_collapsed'
+		};
+
+		this.options = $.extend({}, defaults, options ? options : {});
+
+		this.jExpandable = $(this.options.expandable);
+		
+		this.expandedClass = this.options.expanded;
+		
+		this.collapsedTrigger = this.options.collapsedClass;
+		this.expandedTrigger = this.options.expandedClass;
+		
+		this.trigger = this.options.trigger;
+		
+		this.jTriggers = $(this.trigger, this.jExpandable);
+		var _self = this;
+
+		this.jTriggers.live('click', function (e) {
+			var jCurrent = $(this),
+				expander = true;
+			
+			// Check current status
+			expander = (jCurrent.hasClass(_self.collapsedTrigger));
+			var jFull = jCurrent.siblings(_self.expandedClass);
+			
+			if (!jFull.is(':animated')) {	
+				if (expander) { // expand
+					jCurrent.removeClass(_self.collapsedTrigger).addClass(_self.expandedTrigger);
+					jFull.slideDown(300);
+				} else { // collapse
+					jCurrent.removeClass(_self.expandedTrigger).addClass(_self.collapsedTrigger);
+					jFull.slideUp(300);
+				}
+			}
+			
+		});
+	};
+
 	$.fn.paperfold = function(conf) {
 
 		//Extend defaults
@@ -184,65 +211,15 @@ var transEndEventNames = {
 			if(Modernizr.csstransforms3d && !$.paperfold.isMobileBrowser) {
 				jFoldable.each(function(i, el) {
 						$(el).parent().addClass('pf__item_inited');
-						paperfolds[i] = Object.create(paperfold);
+						paperfolds[i] = Object.create(Paperfold);
 						paperfolds[i].init(el, conf.foldHeight);
 				});
 			} else {
-				console.log('not supported');
+				var oExpander = new Expander();
 			}
-			
 		});
 
 		return this;
 	};
 
 })(jQuery);
-
-
-//Expander object. Example usage: 'read more' in front page sections
-var Expander = function (options) {
-	var defaults = {
-		expandable : '.g-expandable',
-		expanded : '.g-expanded',
-		trigger : '.g-trigger',
-		pseudo : '.g-pseudo',
-		
-		expandedClass : 'g-trigger_expanded',
-		collapsedClass : 'g-trigger_collapsed'
-	};
-
-	this.options = $.extend({}, defaults, options ? options : {});
-
-	this.jExpandable = $(this.options.expandable);
-	
-	this.expandedClass = this.options.expanded;
-	
-	this.collapsedTrigger = this.options.collapsedClass;
-	this.expandedTrigger = this.options.expandedClass;
-	
-	this.trigger = this.options.trigger;
-	
-	this.jTriggers = $(this.trigger, this.jExpandable);
-	var _self = this;
-
-	this.jTriggers.live('click', function (e) {
-		var jCurrent = $(this),
-			expander = true;
-		
-		
-		// Check current status
-		expander = (jCurrent.hasClass(_self.collapsedTrigger));
-		var jFull = jCurrent.siblings(_self.expandedClass);
-
-		if (!jFull.is(':animated')) {	
-			if (expander) { // expand
-				jCurrent.removeClass(_self.collapsedTrigger).addClass(_self.expandedTrigger);
-				jFull.slideDown(300);
-			} else { // collapse
-				jCurrent.removeClass(_self.expandedTrigger).addClass(_self.collapsedTrigger);
-				jFull.slideUp(300);
-			}
-		}
-		
-	});
-};
