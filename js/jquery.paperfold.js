@@ -29,7 +29,7 @@ var transEndEventNames = {
 
 	//Default parameters
 	$.paperfold.conf = {
-		duration: 500,
+		duration: 400,
 		foldHeight: 250,
 		items: '.pf__item',
 		foldable: '.pf__full'
@@ -46,10 +46,11 @@ var transEndEventNames = {
 	var Paperfold = {
 		percentage: 0,
 
-		init: function(element, maxHeight, toggleCallback) {
+		init: function(element, maxHeight, duration, toggleCallback) {
 
 			this.element = $(element);
 			this.maxHeight = maxHeight;
+			this.duration = duration;
 			this.toggleCallback = toggleCallback;
 
 			// get real element height
@@ -81,6 +82,9 @@ var transEndEventNames = {
 			this.bottoms = this.folds.find('> .pf__bottom');
 			this.tops = this.folds.find('> .pf__top');
 
+			$('<div>').append(this.content).addClass('pf__original').appendTo(this.element);
+			this.original = this.element.find('.pf__original');
+
 			// bind buttons
 			
 			this.trigger = this.element.prev('.pf__trigger');
@@ -107,20 +111,30 @@ var transEndEventNames = {
 			$('<div>').addClass('pf__inner').css('bottom', offsetBottom).append(this.content.clone())))));
 		},
 		toggle: function() {
-			console.log('toggle');
-			this.element.parent().toggleClass('pf__item_visible');
+			
 
-			if(this.element.parent().hasClass('pf__item_visible')) {
+			if(!this.element.parent().hasClass('pf__item_visible')) {
 				// open
 				// animate folds height (css transition)
 				this.folds.height(this.foldHeight);
+
+				var folds = this.folds;
+				this.original.delay(this.duration).show(0, function () {
+					folds.hide();
+				});
+
 				this.trigger.removeClass('pf__trigger_collapsed').addClass('pf__trigger_expanded');
 			} else {
 				// close
 				// animate folds height (css transition)
-				this.folds.height(0);
+				
+				this.original.hide();
+				this.folds.show().height(0);
+
 				this.trigger.removeClass('pf__trigger_expanded').addClass('pf__trigger_collapsed');
 			}
+
+			this.element.parent().toggleClass('pf__item_visible');
 			this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
 		},
 		open: function(percentage) {
@@ -214,7 +228,7 @@ var transEndEventNames = {
 				jFoldable.each(function(i, el) {
 						$(el).parent().addClass('pf__item_inited');
 						paperfolds[i] = Object.create(Paperfold);
-						paperfolds[i].init(el, conf.foldHeight);
+						paperfolds[i].init(el, conf.foldHeight, conf.duration);
 				});
 			} else {
 				var oExpander = new Expander();
