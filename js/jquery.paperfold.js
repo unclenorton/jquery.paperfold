@@ -13,6 +13,8 @@ var transEndEventNames = {
  * @version 0.1
  * @date 2012-11-12
  * @requires jQuery 1.7.2
+ * @requires prefixfree.js
+ * @requires modernizr.js (http://www.modernizr.com/download/#-csstransforms3d-csstransitions-shiv-cssclasses-prefixed-teststyles-testprop-testallprops-prefixes-domprefixes-load)
  *
  * A jquery plugin for paperfold effect (as seen at https://developer.mozilla.org/en-US/demos/detail/paperfold-css/launch)
  *
@@ -105,7 +107,7 @@ var transEndEventNames = {
 			$('<div>').addClass('pf__inner').css('bottom', offsetBottom).append(this.content.clone())))));
 		},
 		toggle: function() {
-
+			console.log('toggle');
 			this.element.parent().toggleClass('pf__item_visible');
 
 			if(this.element.parent().hasClass('pf__item_visible')) {
