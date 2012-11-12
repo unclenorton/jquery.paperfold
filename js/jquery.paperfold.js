@@ -100,7 +100,8 @@ var transEndEventNames = {
 			this.tops = this.folds.find('> .pf__top');
 
 			// bind buttons
-			this.trigger = this.element.prev('.event__trigger');
+			
+			this.trigger = this.element.prev('.pf__trigger');
 			this.trigger.click($.proxy(this, 'toggle'));
 
 			this.element.parent().addClass('pf__item_ready');
@@ -125,9 +126,9 @@ var transEndEventNames = {
 		},
 		toggle: function() {
 
-			this.element.toggleClass('pf__visible');
+			this.element.parent().toggleClass('pf__item_visible');
 
-			if(this.element.hasClass('pf__visible')) {
+			if(this.element.parent().hasClass('pf__item_visible')) {
 				// open
 				// animate folds height (css transition)
 				this.folds.height(this.foldHeight);

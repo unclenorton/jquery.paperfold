@@ -65,119 +65,116 @@
 }
 
 /* Paperfold */
-.pf__item {
-    /*overflow: hidden; /* important for big folds but bad for demo because it cuts of the depth in other perspectives */
+.pf__item .pf__full {
+	/*overflow: hidden; /* important for big folds but bad for demo because it cuts of the depth in other perspectives */
 
-    transform-style: preserve-3d;
+	transform-style: preserve-3d;
 }
 
-.pf__item.pf__item_ready {
+.pf__item_ready,
+.pf__item_ready .pf__full {
 	display: block;
 }
 
 /* 
-    every fold is holding two identical divs: top and bottom 
-    the children divs are positioned relative to it
-    the slice grows from zero to 1/n of the elements height (n = number of slices)
+	every fold is holding two identical divs: top and bottom 
+	the children divs are positioned relative to it
+	the slice grows from zero to 1/n of the elements height (n = number of slices)
 */
 
 /* 
-    easing functions
-    ================
-    
-    kappa = 0.5522847498307936
-    - half circle (low): cubic-bezier(0.552, 0.000, 1.000, 0.448)
-    - half circle (top): cubic-bezier(0.000, 0.552, 0.448, 1.000) 
-    - ease cubic-bezier(0.250, 0.100, 0.250, 1.000)
-    - inverse-ease cubic-bezier(0.750, 0.000, 0.750, 0.900) 
-    
-    - self tested cubic-bezier(0.500, 0.200, 0.900, 0.820)
+	easing functions
+	================
+	
+	kappa = 0.5522847498307936
+	- half circle (low): cubic-bezier(0.552, 0.000, 1.000, 0.448)
+	- half circle (top): cubic-bezier(0.000, 0.552, 0.448, 1.000) 
+	- ease cubic-bezier(0.250, 0.100, 0.250, 1.000)
+	- inverse-ease cubic-bezier(0.750, 0.000, 0.750, 0.900) 
+	
+	- self tested cubic-bezier(0.500, 0.200, 0.900, 0.820)
 */
 
 .pf__item .pf__fold {
-    height: 0;
-    position: relative;
-    transform-style: preserve-3d;
-    perspective: 400px;
-
-    -webkit-backface-visibility: visible;
-    bakface-visibility: hidden;
+	height: 0;
+	position: relative;
+	transform-style: preserve-3d;
+	perspective: 400px;
+	bakface-visibility: hidden;
 }
 
-.pf__item.pf__item_ready .pf__fold {
-    transition: height 500ms linear;
+.pf__item_ready .pf__fold {
+	transition: height 500ms linear;
 }
 
 /* reset the background color */
 .pf__item .pf__fold section { background: none; }
 /* 
-    they are the two folds - top and bottom
+	they are the two folds - top and bottom
 */
 .pf__item .pf__fold .pf__top,
 .pf__item .pf__fold .pf__bottom {
-    width: 100%;
-    transform-origin: top;
-    transform: rotateX(-90deg);
-    background-image: linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.55) 3%, rgba(255,255,255,0.5) 66%, rgba(255,255,255,0));
-    background-color: #505455; /* hsl(192,6,33) */
-    position: relative;
-    overflow: hidden;
+	overflow: hidden;
+	width: 100%;
+	transform-origin: top;
+	transform: rotateX(-90deg);
+	background-image: linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.55) 3%, rgba(255,255,255,0.5) 66%, rgba(255,255,255,0));
+	background-color: #505455; /* hsl(192,6,33) */
+	position: relative;
 }
 
 .pf__item .pf__fold .pf__wrapper {
 	position: relative;
 	height: 100%;
-	border-left: 1px solid #ccc;
-    border-right: 1px solid #ccc;
 }
 
-.pf__item.pf__item_ready .pf__fold .pf__top,
-.pf__item.pf__item_ready .pf__fold .pf__bottom {
-    /* closing transition */
-    transition: transform 800ms cubic-bezier(0.000, 0.450, 1.000, 0.950), background-color 800ms ease-in, opacity 300ms linear;;
+.pf__item_ready .pf__fold .pf__top,
+.pf__item_ready .pf__fold .pf__bottom {
+	/* closing transition */
+	transition: transform 800ms cubic-bezier(0.000, 0.450, 1.000, 0.950), background-color 800ms ease-in, opacity 300ms linear;;
 }
 
 .pf__item .pf__fold .pf__top {
-	 opacity: 0.5;
+	opacity: 0.5;
 	z-index: 10;
 }
 
 .pf__item .pf__fold .pf__bottom {
-    bottom: 0;
-    position: absolute;
-    background-image: -moz-linear-gradient(top, rgba(255,255,255,0), rgba(255,255,255,0.5) 34%, rgba(255,255,255,.95) 97%, rgba(255,255,255,1));
-    background-image: linear-gradient(top, rgba(255,255,255,0), rgba(255,255,255,0.5) 34%, rgba(255,255,255,.95) 97%, rgba(255,255,255,1));
-    transform-origin: bottom;
-    transform: rotateX(90deg);
-    opacity: 0.5;
+	bottom: 0;
+	position: absolute;
+	background-image: -moz-linear-gradient(top, rgba(255,255,255,0), rgba(255,255,255,0.5) 34%, rgba(255,255,255,.95) 97%, rgba(255,255,255,1));
+	background-image: linear-gradient(top, rgba(255,255,255,0), rgba(255,255,255,0.5) 34%, rgba(255,255,255,.95) 97%, rgba(255,255,255,1));
+	transform-origin: bottom;
+	transform: rotateX(90deg);
+	opacity: 0.5;
 }
 
-.pf__item.pf__visible .pf__fold .pf__top,
-.pf__item.pf__visible .pf__fold .pf__bottom {
-    transform: rotateX(0);
-    opacity: 1;
-    background-color: white;
-    /* opening transition */
-    transition: transform 500ms cubic-bezier(0.000, 0.050, 1.000, 0.550), background-color 500ms ease-out, opacity 300ms linear;
+.pf__item_visible .pf__fold .pf__top,
+.pf__item_visible .pf__fold .pf__bottom {
+	transform: rotateX(0);
+	opacity: 1;
+	background-color: white;
+	/* opening transition */
+	transition: transform 500ms cubic-bezier(0.000, 0.050, 1.000, 0.550), background-color 500ms ease-out, opacity 300ms linear;
 }
 
 /* inner holder for the content */
 .pf__item .pf__fold .pf__inner {
-    position: absolute;
+	position: absolute;
 }
 
-.pf__item.pf__item_ready, .pf__item.pf__item_ready.pf__visible,
-.pf__item.pf__item_ready .pf__fold, .pf__item.pf__item_ready.pf__visible .pf__fold,
-.pf__item.pf__item_ready .pf__fold .pf__top, .pf__item.pf__item_ready .pf__fold .pf__bottom,
-.pf__item.pf__item_ready.pf__visible .pf__fold .pf__top, .pf__item.pf__item_ready.pf__visible .pf__fold .pf__bottom,
-.pf__item.pf__item_ready .pf__fold .pf__inner {
-    transition-duration: 400ms;
+.pf__item_ready .pf__full, .pf__item_visible .pf__full,
+.pf__item_ready .pf__fold, .pf__item_visible .pf__fold,
+.pf__item_ready .pf__fold .pf__top, .pf__item_ready .pf__fold .pf__bottom,
+.pf__item_visible .pf__fold .pf__top, .pf__item_visible .pf__fold .pf__bottom,
+.pf__item_ready .pf__fold .pf__inner {
+	transition-duration: 400ms;
 }
 
-.pf__item.no-transition, .pf__item.pf__visible.no-transition,
-.pf__item.no-transition .pf__fold, .pf__item.pf__visible.no-transition .pf__fold,
+.pf__item.no-transition, .pf__item_visible.no-transition,
+.pf__item.no-transition .pf__fold, .pf__item_visible.no-transition .pf__fold,
 .pf__item.no-transition .pf__fold .pf__top, .pf__item.no-transition .pf__fold .pf__bottom,
-.pf__item.pf__visible.no-transition .pf__fold .pf__top, .pf__item.pf__visible.no-transition .pf__fold .pf__bottom,
+.pf__item_visible.no-transition .pf__fold .pf__top, .pf__item_visible.no-transition .pf__fold .pf__bottom,
 .pf__item.no-transition .pf__fold .pf__inner {
-    transition: none;
+	transition: none;
 }
