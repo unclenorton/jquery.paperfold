@@ -10,7 +10,7 @@ var transEndEventNames = {
 
 /**
  * @author Dmitry Kharchenko (dmitry@upfrontmedia.asia)
- * @version 0.1
+ * @version 0.2
  * @date 2012-11-12
  * @requires jQuery 1.7.2
  * @requires prefixfree.js
@@ -32,7 +32,24 @@ var transEndEventNames = {
 		duration: 500,
 		foldHeight: 150,
 		items: '.pf__item',
-		foldable: '.pf__full'
+		foldable: '.pf__full',
+		trigger: '.pf__trigger',
+
+
+		// Classes
+		
+		initedClass: 'pf__item_inited',
+		foldClass: 'pf__fold',
+		foldBClass: 'pf__bottom',
+		foldTClass: 'pf__top',
+		originalClass: 'pf__original',
+		readyClass: 'pf__item_ready',
+		visibleClass: 'pf__item_visible',
+		wrapperClass: 'pf__wrapper',
+		innerClass: 'pf__inner',
+
+		triggerExpandedClass: 'pf__trigger_expanded',
+		triggerCollapsedClass: 'pf__trigger_collapsed'
 	};
 
 	$.paperfold.isMobileBrowser = (navigator.userAgent.match(/Android/i) ||
@@ -45,6 +62,7 @@ var transEndEventNames = {
 
 	var Paperfold = {
 		percentage: 0,
+		locked: false,
 
 		init: function(element, maxHeight, duration, toggleCallback) {
 
@@ -78,19 +96,20 @@ var transEndEventNames = {
 			// cache the folds -> can i do this while creating them?
 			// i mean i can of course cache them but then the dom connection is not there
 			// i'd love to get a hint: @mrflix or mrflix@gmail.com
-			this.folds = this.element.find('> .pf__fold');
-			this.bottoms = this.folds.find('> .pf__bottom');
-			this.tops = this.folds.find('> .pf__top');
+			this.folds = this.element.find('> .' + $.paperfold.workingConf.foldClass);
+			this.bottoms = this.folds.find('> .' + $.paperfold.workingConf.foldBClass);
+			this.tops = this.folds.find('> .' + $.paperfold.workingConf.foldTClass);
 
-			$('<div>').append(this.content).addClass('pf__original').appendTo(this.element);
-			this.original = this.element.find('.pf__original');
+			// Append the original text block to fix selection issues
+			$('<div>').append(this.content).addClass($.paperfold.workingConf.originalClass).appendTo(this.element);
+			this.original = this.element.find('.' + $.paperfold.workingConf.originalClass);
 
 			// bind buttons
 			
-			this.trigger = this.element.prev('.pf__trigger');
+			this.trigger = this.element.prev($.paperfold.workingConf.trigger);
 			this.trigger.click($.proxy(this, 'toggle'));
 
-			this.element.parent().addClass('pf__item_ready');
+			this.element.parent().addClass($.paperfold.workingConf.readyClass);
 		},
 		update: function(maxHeight) {
 			this.element.children().detach();
@@ -103,12 +122,18 @@ var transEndEventNames = {
 		createFold: function(j, topHeight, bottomHeight) {
 			var offsetTop = -j * topHeight;
 			var offsetBottom = -this.height + j * topHeight + this.foldHeight;
-			return $('<div>').addClass('pf__fold').append(
-			$('<div>').addClass('pf__top').css('height', topHeight).append(
-			$('<div>').addClass('pf__wrapper').append(
-			$('<div>').addClass('pf__inner').css('top', offsetTop).append(this.content.clone()))).add($('<div>').addClass('pf__bottom').css('height', bottomHeight).append(
-			$('<div>').addClass('pf__wrapper').append(
-			$('<div>').addClass('pf__inner').css('bottom', offsetBottom).append(this.content.clone())))));
+
+			return $('<div>').addClass($.paperfold.workingConf.foldClass).append(
+				$('<div>').addClass($.paperfold.workingConf.foldTClass).css('height', topHeight).append(
+					$('<div>').addClass($.paperfold.workingConf.wrapperClass).append(
+						$('<div>').addClass($.paperfold.workingConf.innerClass)
+						.css('top', offsetTop)
+						.append(this.content.clone())))
+						.add($('<div>').addClass($.paperfold.workingConf.foldBClass).css('height', bottomHeight).append(
+							$('<div>').addClass($.paperfold.workingConf.wrapperClass).append(
+								$('<div>').addClass($.paperfold.workingConf.innerClass)
+								.css('bottom', offsetBottom).append(this.content.clone()))))
+			);
 		},
 		toggle: function() {
 			
@@ -121,11 +146,12 @@ var transEndEventNames = {
 					that.unlock();
 				}, this.duration);
 
-				if(!this.element.parent().hasClass('pf__item_visible')) {
+				// It is essential to set the 'visible' class before setting the folds height
+				// And remove it only after it has been set back to 0
+				if(!this.element.parent().hasClass($.paperfold.workingConf.visibleClass)) {
 					// open
 					// animate folds height (css transition)
-					
-					that.element.parent().addClass('pf__item_visible');
+					that.element.parent().addClass($.paperfold.workingConf.visibleClass);
 					this.folds.height(this.foldHeight);
 
 					var folds = this.folds;
@@ -133,15 +159,16 @@ var transEndEventNames = {
 						folds.hide();
 					});
 
-					this.trigger.removeClass('pf__trigger_collapsed').addClass('pf__trigger_expanded');
+					this.trigger.removeClass($.paperfold.workingConf.triggerCollapsedClass)
+								.addClass($.paperfold.workingConf.triggerExpandedClass);
 				} else {
 					// close
 					// animate folds height (css transition)
-					
 					this.original.hide();
 					this.folds.show().height(0);
-					that.element.parent().removeClass('pf__item_visible');
-					this.trigger.removeClass('pf__trigger_expanded').addClass('pf__trigger_collapsed');
+					that.element.parent().removeClass($.paperfold.workingConf.visibleClass);
+					this.trigger.removeClass($.paperfold.workingConf.triggerExpandedClass)
+								.addClass($.paperfold.workingConf.triggerCollapsedClass);
 				}
 				
 				this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
@@ -153,7 +180,10 @@ var transEndEventNames = {
 		}
 	};
 
-	//Expander object. Example usage: 'read more' in front page sections
+	/**
+	 * Slide up/down fallback for older browsers
+	 * @param {[type]} options [description]
+	 */
 	var Expander = function (options) {
 		var defaults = {
 			expandable : '.pf__item',
@@ -190,10 +220,10 @@ var transEndEventNames = {
 			if (!jFull.is(':animated')) {	
 				if (expander) { // expand
 					jCurrent.removeClass(_self.collapsedTrigger).addClass(_self.expandedTrigger);
-					jFull.slideDown(300);
+					jFull.slideDown($.paperfold.workingConf.duration);
 				} else { // collapse
 					jCurrent.removeClass(_self.expandedTrigger).addClass(_self.collapsedTrigger);
-					jFull.slideUp(300);
+					jFull.slideUp($.paperfold.workingConf.duration);
 				}
 			}
 			
@@ -204,6 +234,7 @@ var transEndEventNames = {
 
 		//Extend defaults
 		conf = $.extend($.paperfold.conf, conf);
+		$.paperfold.workingConf = conf;
 
 		this.each(function(i) {
 
@@ -213,7 +244,7 @@ var transEndEventNames = {
 
 			if(Modernizr.csstransforms3d && !$.paperfold.isMobileBrowser) {
 				jFoldable.each(function(i, el) {
-						$(el).parent().addClass('pf__item_inited');
+						$(el).parent().addClass($.paperfold.workingConf.initedClass);
 						paperfolds[i] = Object.create(Paperfold);
 						paperfolds[i].init(el, conf.foldHeight, conf.duration);
 				});
