@@ -29,8 +29,8 @@ var transEndEventNames = {
 
 	//Default parameters
 	$.paperfold.conf = {
-		duration: 400,
-		foldHeight: 250,
+		duration: 500,
+		foldHeight: 150,
 		items: '.pf__item',
 		foldable: '.pf__full'
 	};
@@ -112,30 +112,40 @@ var transEndEventNames = {
 		},
 		toggle: function() {
 			
+			var that = this;
 
-			if(!this.element.parent().hasClass('pf__item_visible')) {
-				// open
-				// animate folds height (css transition)
-				this.folds.height(this.foldHeight);
+			if (!this.locked) {
 
-				var folds = this.folds;
-				this.original.delay(this.duration).show(0, function () {
-					folds.hide();
-				});
+				this.locked = true;
+				$.paperfold.lockTimeout = window.setTimeout(function () {
+					that.unlock();
+				}, this.duration);
 
-				this.trigger.removeClass('pf__trigger_collapsed').addClass('pf__trigger_expanded');
-			} else {
-				// close
-				// animate folds height (css transition)
+				if(!this.element.parent().hasClass('pf__item_visible')) {
+					// open
+					// animate folds height (css transition)
+					
+					that.element.parent().addClass('pf__item_visible');
+					this.folds.height(this.foldHeight);
+
+					var folds = this.folds;
+					this.original.delay(this.duration).show(0, function () {
+						folds.hide();
+					});
+
+					this.trigger.removeClass('pf__trigger_collapsed').addClass('pf__trigger_expanded');
+				} else {
+					// close
+					// animate folds height (css transition)
+					
+					this.original.hide();
+					this.folds.show().height(0);
+					that.element.parent().removeClass('pf__item_visible');
+					this.trigger.removeClass('pf__trigger_expanded').addClass('pf__trigger_collapsed');
+				}
 				
-				this.original.hide();
-				this.folds.show().height(0);
-
-				this.trigger.removeClass('pf__trigger_expanded').addClass('pf__trigger_collapsed');
+				this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
 			}
-
-			this.element.parent().toggleClass('pf__item_visible');
-			this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
 		},
 		open: function(percentage) {
 			// cache percentage
@@ -164,6 +174,10 @@ var transEndEventNames = {
 
 			this.tops.add(this.bottoms).css('background-color', backgroundColor);
 		},
+		unlock: function () {
+			window.clearTimeout($.paperfold.lockTimeout);
+			this.locked = false;
+		}
 	};
 
 	//Expander object. Example usage: 'read more' in front page sections
