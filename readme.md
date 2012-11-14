@@ -36,6 +36,8 @@ Additionally, your HTML has to follow the structure (this may be changed in the 
 		</div>
 	</div>
 
+View the demo here:[http://unclenorton.github.com/jquery.paperfold/](http://unclenorton.github.com/jquery.paperfold/).
+
 # Options
 
 
