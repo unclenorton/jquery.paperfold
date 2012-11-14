@@ -147,33 +147,6 @@ var transEndEventNames = {
 				this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
 			}
 		},
-		open: function(percentage) {
-			// cache percentage
-			this.percentage = percentage;
-
-			// change angle of tops and bottoms
-			var c = this.foldHeight * percentage,
-				a = b = this.foldHeight / 2,
-				part = 2 * b * c,
-				bottomAngle = part <= 0 ? 90 : Math.acos((b * b + c * c - a * a) / part) * 180 / Math.PI,
-				topAngle = 360 - bottomAngle;
-
-			this.tops.css(transformString, 'rotateX(' + topAngle + 'deg)');
-			this.bottoms.css(transformString, 'rotateX(' + bottomAngle + 'deg)');
-
-			// change folds height
-			var foldHeight = this.height / this.foldCount * percentage;
-			this.folds.height(foldHeight);
-
-			// change the background color
-			// from dark hsl(192,6,33) at 0
-			// to light hsl(192,0,100) at 100
-			var saturation = Math.round(6 - 6 * percentage),
-				lightness = 33 + Math.round(67 * percentage),
-				backgroundColor = 'hsl(192,' + saturation + '%,' + lightness + '%)';
-
-			this.tops.add(this.bottoms).css('background-color', backgroundColor);
-		},
 		unlock: function () {
 			window.clearTimeout($.paperfold.lockTimeout);
 			this.locked = false;
