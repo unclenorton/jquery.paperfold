@@ -1,3 +1,8 @@
+body {
+	background: #999;
+	font: 87.45%/1.4 "Helvetica Neue", Arial, sans-serif;
+}
+
 /* Collapsible item container */
 .pf {
 	width: 600px;
@@ -36,6 +41,11 @@
 
 .pf__short .pf__reducer {
 	padding-top: 30px;
+	background: #fff;
+	-webkit-box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.5);
+	-ms-box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.5);
+	box-shadow: 0 5px 15px -5px rgba(0, 0, 0, 0.5);
 }
 
 .pf__reducer p {
@@ -95,33 +105,31 @@
 
 .pf__original {
 	display: none;
+	background: #fff;
 }
 
 .pf__item .pf__fold {
 	height: 0;
-	position: relative;
 	transform-style: preserve-3d;
-	perspective: 500px;
-	bakface-visibility: visible;
+	perspective: 400px;
 }
 
 .pf__item_ready .pf__fold {
-	height: 0;
-	transition: height 400ms linear;
+	transition: height 500ms linear;
 }
 
 /* 
 	they are the two folds - top and bottom
 */
-.pf__item .pf__fold .pf__top,
-.pf__item .pf__fold .pf__bottom {
+.pf__item .pf__top,
+.pf__item .pf__bottom {
+	position: relative;
 	overflow: hidden;
 	width: 100%;
 	transform-origin: top;
-	
+	transform: rotateX(-90deg);
 	background-image: linear-gradient(top, rgba(255,255,255,0.5), rgba(255,255,255,0.55) 3%, rgba(255,255,255,0.5) 66%, rgba(255,255,255,0));
 	background-color: #505455; /* hsl(192,6,33) */
-	position: relative;
 }
 
 .pf__item .pf__fold .pf__wrapper {
@@ -129,19 +137,19 @@
 	height: 100%;
 }
 
-.pf__item_ready .pf__fold .pf__top,
-.pf__item_ready .pf__fold .pf__bottom {
+.pf__item_ready .pf__top,
+.pf__item_ready .pf__bottom {
 	/* closing transition */
-	transform: rotateX(-90deg);
-	transition: transform 400ms cubic-bezier(0.000, 0.450, 1.000, 0.950), background-color 400ms ease-in, opacity 300ms linear;;
+	
+	transition: transform 800ms cubic-bezier(0.000, 0.450, 1.000, 0.950), background-color 800ms ease-in, opacity 300ms linear;
 }
 
-.pf__item .pf__fold .pf__top {
+.pf__item .pf__top {
 	opacity: 0.5;
 	z-index: 10;
 }
 
-.pf__item_ready .pf__fold .pf__bottom {
+.pf__item_ready .pf__bottom {
 	bottom: 0;
 	position: absolute;
 	background-image: -moz-linear-gradient(top, rgba(255,255,255,0), rgba(255,255,255,0.5) 34%, rgba(255,255,255,.95) 97%, rgba(255,255,255,1));
@@ -152,13 +160,13 @@
 	opacity: 0.5;
 }
 
-.pf__item_visible .pf__fold .pf__top,
-.pf__item_visible .pf__fold .pf__bottom {
+.pf__item_visible .pf__top,
+.pf__item_visible .pf__bottom {
 	transform: rotateX(0);
 	opacity: 1;
 	background-color: white;
 	/* opening transition */
-	transition: transform 400ms cubic-bezier(0.000, 0.050, 1.000, 0.550), background-color 400ms ease-out, opacity 300ms linear;
+	transition: transform 500ms cubic-bezier(0.000, 0.050, 1.000, 0.550), background-color 500ms ease-out, opacity 300ms linear;
 }
 
 /* inner holder for the content */
@@ -170,5 +178,5 @@
 .pf__item_ready .pf__fold,
 .pf__item_ready .pf__top, .pf__item_ready .pf__bottom,
 .pf__item_ready .pf__inner {
-	transition-duration: 400ms !important;
+	transition-duration: 400ms;
 }
