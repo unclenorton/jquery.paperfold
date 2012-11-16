@@ -78,6 +78,7 @@ var transEndEventNames = {
 			// calculate amount and height of the folds
 			this.foldCount = Math.ceil(this.height / this.maxHeight);
 			this.foldHeight = Math.floor(this.height / this.foldCount);
+			this.error = this.height - (this.foldHeight * this.foldCount);
 
 			// detach the elements children from the dom and cache them 
 			this.content = this.element.children().detach();
@@ -155,8 +156,8 @@ var transEndEventNames = {
 					this.folds.height(this.foldHeight);
 
 					var folds = this.folds;
-					this.original.delay(this.duration).show(0, function () {
-						folds.hide();
+					this.original.delay(this.duration).fadeIn(200, function () {
+						// folds.hide();
 					});
 
 					this.trigger.removeClass($.paperfold.workingConf.triggerCollapsedClass)
