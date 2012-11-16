@@ -1,5 +1,5 @@
 body {
-	background: #999;
+	background: #999 url('low_contrast_linen.png') 0 0 repeat scroll;
 	font: 87.45%/1.4 "Helvetica Neue", Arial, sans-serif;
 }
 
@@ -75,6 +75,7 @@ body {
 
 /* Paperfold */
 .pf__item .pf__full {
+	position: relative;
 	overflow: hidden; /* important for big folds but bad for demo because it cuts of the depth in other perspectives */
 	transform-style: preserve-3d;
 }
@@ -104,7 +105,9 @@ body {
 */
 
 .pf__original {
+	position: absolute;
 	display: none;
+	top: 0;
 	background: #fff;
 }
 
@@ -145,7 +148,6 @@ body {
 }
 
 .pf__item .pf__top {
-	opacity: 0.5;
 	z-index: 10;
 }
 
@@ -157,7 +159,7 @@ body {
 	background-image: linear-gradient(top, rgba(255,255,255,0), rgba(255,255,255,0.5) 34%, rgba(255,255,255,.95) 97%, rgba(255,255,255,1));
 	transform-origin: bottom;
 	transform: rotateX(90deg);
-	opacity: 0.5;
+	z-index: 11;
 }
 
 .pf__item_visible .pf__top,
