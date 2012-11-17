@@ -34,7 +34,8 @@ var transEndEventNames = {
 		items: '.pf__item',
 		foldable: '.pf__full',
 		trigger: '.pf__trigger',
-
+		CSSAnimation : true,
+		useOriginal : true,
 
 		// Classes
 		
@@ -78,7 +79,6 @@ var transEndEventNames = {
 			// calculate amount and height of the folds
 			this.foldCount = Math.ceil(this.height / this.maxHeight);
 			this.foldHeight = Math.floor(this.height / this.foldCount);
-			this.error = this.height - (this.foldHeight * this.foldCount);
 
 			// detach the elements children from the dom and cache them 
 			this.content = this.element.children().detach();
@@ -106,10 +106,15 @@ var transEndEventNames = {
 			this.original = this.element.find('.' + $.paperfold.workingConf.originalClass);
 
 			// bind buttons
-			
+			var that = this;
 			this.trigger = this.element.prev($.paperfold.workingConf.trigger);
-			this.trigger.click($.proxy(this, 'toggle'));
 
+			if ($.paperfold.workingConf.CSSAnimation) {
+				this.trigger.click($.proxy(this, 'toggle'));
+			} else {
+				this.trigger.click($.proxy(this, 'toggleJS'));
+			}
+			
 			this.element.parent().addClass($.paperfold.workingConf.readyClass);
 		},
 		update: function(maxHeight) {
@@ -136,6 +141,34 @@ var transEndEventNames = {
 								.css('bottom', offsetBottom).append(this.content.clone()))))
 			);
 		},
+		open: function(percentage){
+			// cache percentage
+			this.percentage = percentage;
+		  
+			// change angle of tops and bottoms
+			var c = this.foldHeight * percentage
+			,   a = this.foldHeight/2
+			,	b = a
+			,   part = 2*b*c
+			,   bottomAngle = part <= 0 ? 90 : Math.acos( (b*b+c*c-a*a) / part )*180/Math.PI
+			,   topAngle = 360-bottomAngle;
+		  
+			this.tops.css(transformString, 'rotateX(' + topAngle + 'deg)');
+			this.bottoms.css(transformString, 'rotateX(' + bottomAngle + 'deg)');
+		  
+			// change folds height
+			var foldHeight = Math.floor(this.height/this.foldCount * percentage);
+			this.folds.height(foldHeight);
+		  
+			// change the background color
+			// from dark hsl(192,6,33) at 0
+			// to light hsl(192,0,100) at 100
+			var saturation = Math.round(6 - 6 * percentage)
+			,   lightness = 33 + Math.round(67 * percentage)
+			,   backgroundColor = 'hsl(192,'+saturation+'%,'+lightness+'%)';
+		  
+			this.tops.add(this.bottoms).css('background-color', backgroundColor);
+		},
 		toggle: function() {
 			
 			var that = this;
@@ -156,9 +189,11 @@ var transEndEventNames = {
 					this.folds.height(this.foldHeight);
 
 					var folds = this.folds;
-					this.original.delay(this.duration).fadeIn(200, function () {
-						// folds.hide();
-					});
+					if($.paperfold.workingConf.useOriginal) {
+						this.original.delay(this.duration).fadeIn(500, function () {
+							// folds.hide();
+						});
+					}
 
 					this.trigger.removeClass($.paperfold.workingConf.triggerCollapsedClass)
 								.addClass($.paperfold.workingConf.triggerExpandedClass);
@@ -172,6 +207,55 @@ var transEndEventNames = {
 								.addClass($.paperfold.workingConf.triggerCollapsedClass);
 				}
 				
+				this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
+			}
+		},
+		toggleJS : function () {
+			var that = this;
+			if (!$(this).is(':animated')) {
+				if(!this.element.parent().hasClass($.paperfold.workingConf.visibleClass)) {
+					// open
+					// animate folds height (css transition)
+					that.element.parent().addClass('pf_no-transition ' + $.paperfold.workingConf.visibleClass);
+					$(that).animate({
+							percentage : 100
+						}, {
+							duration : $.paperfold.workingConf.duration,
+							step : function (value) {
+								that.open(value / 100);
+
+								if (value > 95 && !that.original.is(':animated')) {
+									that.original.fadeIn(Math.floor(that.duration / 3.3));
+								}
+							},
+							complete : function () {
+
+								that.trigger.removeClass($.paperfold.workingConf.triggerCollapsedClass)
+								.addClass($.paperfold.workingConf.triggerExpandedClass);
+							}
+						}
+					);
+				} else {
+					// close
+					// animate folds height (css transition)
+					this.original.hide();
+					$(that).animate({
+							percentage : 0
+						}, {
+							duration : $.paperfold.workingConf.duration,
+							step : function (value) {
+								that.open(value / 100);
+							},
+							complete : function () {
+								that.element.parent().removeClass($.paperfold.workingConf.visibleClass);
+								that.trigger.removeClass($.paperfold.workingConf.triggerExpandedClass)
+											.addClass($.paperfold.workingConf.triggerCollapsedClass);
+							}
+						}
+					);
+					
+				}
+			
 				this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
 			}
 		},

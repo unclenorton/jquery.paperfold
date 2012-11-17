@@ -16,10 +16,14 @@
 		<script type="text/javascript" src="js/prefixfree.js"></script>
 		<script type="text/javascript" src="js/modernizr.paperfold.js"></script>
 		<script type="text/javascript" src="js/jquery.paperfold.js"></script>
-
+		
 		<script type="text/javascript">
 			$(function () {
-				$('.pf').paperfold();	
+				$('.pf').paperfold({
+					duration : 500,
+					CSSAnimation : false,
+					useOriginal : true
+				});	
 			});
 		</script>
 	</head>
