@@ -39,6 +39,16 @@ body {
 	padding: 0 40px 2em 40px;
 }
 
+/* Show the background of expandable area for incompatible browsers */
+.pf__full .pf__reducer {
+	background: #fff;
+}
+
+/* But hide it from compatible ones */
+.pf__item_visible .pf__reducer {
+	background: none;
+}
+
 .pf__short .pf__reducer {
 	padding-top: 30px;
 	background: #fff;
@@ -174,6 +184,7 @@ body {
 /* inner holder for the content */
 .pf__item .pf__fold .pf__inner {
 	position: absolute;
+
 }
 
 .pf__item_ready .pf__full,
@@ -181,4 +192,11 @@ body {
 .pf__item_ready .pf__top, .pf__item_ready .pf__bottom,
 .pf__item_ready .pf__inner {
 	transition-duration: 400ms;
+}
+
+.pf_no-transition .pf__full,
+.pf_no-transition .pf__fold,
+.pf_no-transition .pf__top, .pf_no-transition .pf__bottom,
+.pf_no-transition .pf__inner {
+	transition-duration: 0ms;
 }
