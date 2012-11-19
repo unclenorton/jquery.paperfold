@@ -121,6 +121,10 @@ body {
 	background: #fff;
 }
 
+.pf__original .pf__reducer {
+	font-size: 99.99%;
+}
+
 .pf__item .pf__fold {
 	height: 0;
 	transform-style: preserve-3d;
