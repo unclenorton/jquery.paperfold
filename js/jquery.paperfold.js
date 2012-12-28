@@ -273,6 +273,7 @@ var transEndEventNames = {
 							step : function (value) {
 								that.open(value / 100);
 
+								// On 95% completion, start showing the overlay with the full text
 								if (value > 95 && !that.original.is(':animated')) {
 									that.original.fadeIn(Math.floor(that.duration / 3.3));
 								}
