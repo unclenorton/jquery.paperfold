@@ -42,7 +42,19 @@ View the demo here: [http://unclenorton.github.com/jquery.paperfold/](http://unc
 
 # Options
 
+**duration:** Transition duration in milliseconds. Only relates to JS transition. Default is `500`.
 
+**foldHeight:** One fold element height, in pixels. Default is `150`.
+
+**items:** CSS selector for the folding element. Default is `.pf__item`.
+
+**foldable:** Selector for the inner element containing the full text. Default is `.pf__full`.
+
+**trigger:** Selector for the trigger element. Default is `.pf__trigger`.
+
+**CSSAnimation:** Uses CSS animation if true, JS otherwise. Default is `true`.
+
+**useOriginal:** Determines whether to overlay the original content of the element on top of the folds when the folding animation is complete. If set to false, the selection will be broken by fold elements. Default is `true`.
 
 # Compatibility
 Works on any browser supporting `csstransforms3d`. Other get simplified sliding animation instead.

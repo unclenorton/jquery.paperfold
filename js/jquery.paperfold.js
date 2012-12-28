@@ -26,14 +26,14 @@ var transEndEventNames = {
  *
  * Options:
  *
- * duration - Transition duration in milliseconds. Only relates to JS transition. Default 500.
- * foldHeight {150} - One fold element height, in pixels. Default 150.
- * items {.pf__item} - CSS selector for the folding element. Default is `.pf__item`.
- * foldable {.pf__full} - Selector for the inner element containing the full text. Default is `.pf__full`.
- * trigger {.pf__trigger} - Selector for the trigger element. Default is `.pf__trigger`.
- * CSSAnimation {true} - Uses CSS animation if true, JS otherwise. Default `true`.
+ * duration - Transition duration in milliseconds. Only relates to JS transition. Default is `500`.
+ * foldHeight - One fold element height, in pixels. Default is `150`.
+ * items - CSS selector for the folding element. Default is `.pf__item`.
+ * foldable - Selector for the inner element containing the full text. Default is `.pf__full`.
+ * trigger - Selector for the trigger element. Default is `.pf__trigger`.
+ * CSSAnimation - Uses CSS animation if true, JS otherwise. Default is `true`.
  * useOriginal - Determines whether to overlay the original content of the element on top of the folds
- * when the folding animation is complete. If set to false, the selection will be broken by fold elements. Default `true`.
+ * when the folding animation is complete. If set to false, the selection will be broken by fold elements. Default is `true`.
  *
  * TODO: update the folds height on page/font resize.
  * 
