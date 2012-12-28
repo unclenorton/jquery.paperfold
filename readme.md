@@ -6,7 +6,7 @@ Allows proper selection and copying/pasting.
 Uses slideDown fallback for browsers that don't support csstransforms3d.
 
 # Version 
-0.2
+0.5
 
 # Usage
 
@@ -36,9 +36,12 @@ Additionally, your HTML has to follow the structure (this may be changed in the 
 		</div>
 	</div>
 
-View the demo here:[http://unclenorton.github.com/jquery.paperfold/](http://unclenorton.github.com/jquery.paperfold/).
+# Demo
+
+View the demo here: [http://unclenorton.github.com/jquery.paperfold/](http://unclenorton.github.com/jquery.paperfold/).
 
 # Options
+
 
 
 # Compatibility

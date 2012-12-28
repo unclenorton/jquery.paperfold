@@ -10,7 +10,7 @@ var transEndEventNames = {
 
 /**
  * @author Dmitry Kharchenko (dmitry@upfrontmedia.asia)
- * @version 0.2
+ * @version 0.5
  * @date 2012-11-12
  * @requires jQuery 1.7.2
  * @requires prefixfree.js
@@ -18,13 +18,32 @@ var transEndEventNames = {
  *
  * A jquery plugin for paperfold effect (as seen at https://developer.mozilla.org/en-US/demos/detail/paperfold-css/launch)
  *
+ * Usage: 
+ * 
+ * $('.pf').paperfold(options);
+ * 
+ * For HTML structure, please refer to readme.md
+ *
+ * Options:
+ *
+ * duration - Transition duration in milliseconds. Only relates to JS transition. Default 500.
+ * foldHeight {150} - One fold element height, in pixels. Default 150.
+ * items {.pf__item} - CSS selector for the folding element. Default is `.pf__item`.
+ * foldable {.pf__full} - Selector for the inner element containing the full text. Default is `.pf__full`.
+ * trigger {.pf__trigger} - Selector for the trigger element. Default is `.pf__trigger`.
+ * CSSAnimation {true} - Uses CSS animation if true, JS otherwise. Default `true`.
+ * useOriginal - Determines whether to overlay the original content of the element on top of the folds
+ * when the folding animation is complete. If set to false, the selection will be broken by fold elements. Default `true`.
+ *
+ * TODO: update the folds height on page/font resize.
+ * 
  */
 
 (function($) {
 	"use strict";
 
 	$.paperfold = $.paperfold || {
-		version: '1.0'
+		version: '0.5'
 	};
 
 	//Default parameters
@@ -65,13 +84,24 @@ var transEndEventNames = {
 		percentage: 0,
 		locked: false,
 
+		/**
+		 * Breaks the target element into a number of folds and sets some internal variables.
+		 * @param  {jQuery collection} element        Target element.
+		 * @param  {int} maxHeight      Maximum height of the fold.
+		 * @param  {int} duration       Transition duration, in milliseconds.
+		 * @param  {function} toggleCallback Callback function.
+		 */
 		init: function(element, maxHeight, duration, toggleCallback) {
 
+			// Assign the parameters to object properties.
 			this.element = $(element);
 			this.maxHeight = maxHeight;
 			this.duration = duration;
 			this.toggleCallback = toggleCallback;
 
+			/**
+			 * Courtesy of mrflix@gmail.com
+			 */
 			// get real element height
 			this.height = this.element.css('height', 'auto').outerHeight();
 			this.element.css('height', '');
@@ -105,8 +135,11 @@ var transEndEventNames = {
 			$('<div>').append(this.content).addClass($.paperfold.workingConf.originalClass).appendTo(this.element);
 			this.original = this.element.find('.' + $.paperfold.workingConf.originalClass);
 
-			// bind buttons
-			var that = this;
+			/**
+			 * mrflix's code ends here
+			 */
+			
+			// Bind buttons
 			this.trigger = this.element.prev($.paperfold.workingConf.trigger);
 
 			if ($.paperfold.workingConf.CSSAnimation) {
@@ -117,14 +150,15 @@ var transEndEventNames = {
 			
 			this.element.parent().addClass($.paperfold.workingConf.readyClass);
 		},
-		update: function(maxHeight) {
-			this.element.children().detach();
-			this.element.html(this.content);
-			this.init(this.element, maxHeight);
-			if(this.percentage !== 0) {
-				this.open(this.percentage);
-			}
-		},
+
+		/**
+		 * Create the HTML for the fold element.
+		 * TODO: replace by innerhtml (?)
+		 * @param  {int} j            Element order
+		 * @param  {int} topHeight    Top subelement height
+		 * @param  {int} bottomHeight Bottom subelement height
+		 * @return {jQuery collection}              jQuery collection containing the complete fold element
+		 */
 		createFold: function(j, topHeight, bottomHeight) {
 			var offsetTop = -j * topHeight;
 			var offsetBottom = -this.height + j * topHeight + this.foldHeight;
@@ -141,6 +175,11 @@ var transEndEventNames = {
 								.css('bottom', offsetBottom).append(this.content.clone()))))
 			);
 		},
+
+		/**
+		 * Set the angles and height according to the specified percentage
+		 * @param  {float} percentage 
+		 */
 		open: function(percentage){
 			// cache percentage
 			this.percentage = percentage;
@@ -169,12 +208,17 @@ var transEndEventNames = {
 		  
 			this.tops.add(this.bottoms).css('background-color', backgroundColor);
 		},
+
+		/**
+		 * CSS-based animation toggle
+		 */
 		toggle: function() {
 			
 			var that = this;
 
 			if (!this.locked) {
 
+				// Check for and set lock if necessary
 				this.locked = true;
 				$.paperfold.lockTimeout = window.setTimeout(function () {
 					that.unlock();
@@ -183,8 +227,8 @@ var transEndEventNames = {
 				// It is essential to set the 'visible' class before setting the folds height
 				// And remove it only after it has been set back to 0
 				if(!this.element.parent().hasClass($.paperfold.workingConf.visibleClass)) {
-					// open
-					// animate folds height (css transition)
+					// Open
+					// Animate folds height (css transition)
 					that.element.parent().addClass($.paperfold.workingConf.visibleClass);
 					this.folds.height(this.foldHeight);
 
@@ -210,17 +254,22 @@ var transEndEventNames = {
 				this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
 			}
 		},
+
+		/**
+		 * JS-based animation toggle
+		 */
 		toggleJS : function () {
 			var that = this;
 			if (!$(this).is(':animated')) {
 				if(!this.element.parent().hasClass($.paperfold.workingConf.visibleClass)) {
-					// open
-					// animate folds height (css transition)
+					// Open
+					// Animate folds height
 					that.element.parent().addClass('pf_no-transition ' + $.paperfold.workingConf.visibleClass);
 					$(that).animate({
 							percentage : 100
 						}, {
 							duration : $.paperfold.workingConf.duration,
+							// Update the rotation along with the height
 							step : function (value) {
 								that.open(value / 100);
 
@@ -229,15 +278,14 @@ var transEndEventNames = {
 								}
 							},
 							complete : function () {
-
 								that.trigger.removeClass($.paperfold.workingConf.triggerCollapsedClass)
 								.addClass($.paperfold.workingConf.triggerExpandedClass);
 							}
 						}
 					);
 				} else {
-					// close
-					// animate folds height (css transition)
+					// Close
+					// Animate folds height
 					this.original.hide();
 					$(that).animate({
 							percentage : 0
@@ -259,6 +307,10 @@ var transEndEventNames = {
 				this.tops.add(this.bottoms).css('background-color', '').css(transformString, '');
 			}
 		},
+
+		/**
+		 * An artificial lock function required to detect whether the CSS animation is still running
+		 */
 		unlock: function () {
 			window.clearTimeout($.paperfold.lockTimeout);
 			this.locked = false;
@@ -267,7 +319,7 @@ var transEndEventNames = {
 
 	/**
 	 * Slide up/down fallback for older browsers
-	 * @param {[type]} options [description]
+	 * @param {Object} options - Object containing the selector classes
 	 */
 	var Expander = function (options) {
 		var defaults = {
@@ -302,7 +354,7 @@ var transEndEventNames = {
 			expander = (jCurrent.hasClass(_self.collapsedTrigger));
 			var jFull = jCurrent.siblings(_self.expandedClass);
 			
-			if (!jFull.is(':animated')) {	
+			if (!jFull.is(':animated')) { // Prevent jitter
 				if (expander) { // expand
 					jCurrent.removeClass(_self.collapsedTrigger).addClass(_self.expandedTrigger);
 					jFull.slideDown($.paperfold.workingConf.duration);
@@ -327,6 +379,8 @@ var transEndEventNames = {
 				jFoldable = $(this).find(conf.foldable),
 				paperfolds = [];
 
+			// Check for feature support
+			// Do not show on mobile devices regardless of support
 			if(Modernizr.csstransforms3d && !$.paperfold.isMobileBrowser) {
 				jFoldable.each(function(i, el) {
 						$(el).parent().addClass($.paperfold.workingConf.initedClass);
