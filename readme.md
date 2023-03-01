@@ -38,7 +38,7 @@ Additionally, your HTML has to follow the structure (this may be changed in the 
 
 # Demo
 
-View the demo here: [http://unclenorton.github.com/jquery.paperfold/](http://unclenorton.github.com/jquery.paperfold/).
+View the demo here: [http://unclenorton.github.io/jquery.paperfold/](http://unclenorton.github.io/jquery.paperfold/).
 
 # Options
 
